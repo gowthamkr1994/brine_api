@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  web:
+    build: ./brine
+    command: sh -c "sleep 30;python manage.py runserver"
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./brine:/code
+
+  db:
+    image: mariadb:10.8
+    container_name: mysql-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: brine
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/var/lib/mysql/
+    
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
